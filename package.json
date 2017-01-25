@@ -1,0 +1,21 @@
+{
+  "name": "aws_ip_range_noti",
+  "version": "0.0.1",
+  "description": "Aws Ip list change Notification Project",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./app.js"
+  },
+  "repository": {
+          "type": "git",
+          "url": "https://github.com/geunspage/aws_ip_range_chg_noti.git"
+  },
+  "author": "geunspage",
+  "license": "MIT",
+  "dependencies": {
+        "sync-request":"3.0.1",
+        "jsonfile":"2.4.0",
+        "nodemailer": "0.7.1",
+        "async":"2.0.1"
+  }
+}
