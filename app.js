@@ -1,21 +1,9 @@
 var async = require('async'), 
-	commonFunc = require('./commonFunc.js');
+	commonFunc = require('./commonFunc.js'),
+	config = require('./config.js');
 
-var aws_ip_range_api = "https://ip-ranges.amazonaws.com/ip-ranges.json",
-	fileFullNm = "./AWS_IP_RANGE.json",
-	emailOption = {
-		service:"Gmail",
-		auth:
-			{user:"your email Id",passwd:"your password"},
-		mailOption:
-			{
-				from:"TEST <test@test.com>",
-				to:['test@test.com','test@test.com'],
-				subject:"AWS IP CHANGE LIST"
-			}
-		};
-
-
+var aws_ip_range_api = "https://ip-ranges.amazonaws.com/ip-ranges.json";
+	
 async.waterfall([
 	/**
 	 * API Call
@@ -38,11 +26,11 @@ async.waterfall([
 	 * @param callback
 	 */
 	function getFileJsonData(apiJson, callback) {
-		var fileJson = commonFunc.getAwsIpRangeDataFile(fileFullNm);
+		var fileJson = commonFunc.getAwsIpRangeDataFile(config.fileFullNm);
 		
 		if (fileJson === "") {
 			console.log("Create Aws Ip Range Json File.");
-			commonFunc.createJsonFile(apiJson, fileFullNm);
+			commonFunc.createJsonFile(apiJson, config.fileFullNm);
 			return;
 		}
 		
@@ -64,7 +52,7 @@ async.waterfall([
 		
 		var chgIpJson = commonFunc.diffJsonData(fileJson, apiJson);
 		
-		commonFunc.createJsonFile(apiJson, fileFullNm);
+		commonFunc.createJsonFile(apiJson, config.fileFullNm);
 		
 		callback(null, chgIpJson);
 	},
@@ -75,7 +63,7 @@ async.waterfall([
 	 * @param callback
 	 */
 	function notiEmail(chgIpJson, callback) {
-		commonFunc.sendEmailData(JSON.stringify(chgIpJson), emailOption);
+		commonFunc.sendEmailData(JSON.stringify(chgIpJson), config.emailOption);
 	}
 ], function(err, result) {
     if (err) {
