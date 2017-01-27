@@ -11,9 +11,9 @@ module.exports = {
 			if (result.statusCode === 200) {
 				return result;
 			}
-			
+
 			return "";
-			
+
 		},
 		/**
 		 * JsonFile Read
@@ -32,23 +32,23 @@ module.exports = {
 			if (fileJson === ""){
 				return false;
 			}
-			
+
 			if (apiJson.syncToken > fileJson.syncToken){
 				return true;
 			}
-			
+
 			return false;
-			
+
 		},
 		/**
 		 * JSON Data Diff
 		 */
 		diffJsonData: function(fileJson, apiJson) {
 			var rtnJson = new Array();
-			
+
 			apiJson.prefixes.forEach(function(data) {
 				var isJsonPush = true;
-				
+
 				for (var i = 0 ; i < fileJson.prefixes.length ; i++) {
 					var fileData = fileJson.prefixes[i];
 					if (fileData.ip_prefix === data.ip_prefix && fileData.region === data.region && fileData.service === data.service) {
@@ -56,12 +56,12 @@ module.exports = {
 						break;
 					}
 				}
-				
+
 				if (isJsonPush === true) {
 					rtnJson.push(data);
 				}
 			});
-			
+
 			return rtnJson;
 		},
 		/**
@@ -74,8 +74,8 @@ module.exports = {
 		 * Email Send
 		 **/
 		sendEmailData: function(emailText, emailOption) {
-			
-			var smtpTransport = nodemailer.createTransport("SMTP", {  
+
+			var smtpTransport = nodemailer.createTransport("SMTP", {
 			    service: emailOption.service,
 			    auth: {
 			        user: emailOption.auth.user,
@@ -83,7 +83,7 @@ module.exports = {
 			    }
 			});
 
-			var mailOptions = {  
+			var mailOptions = {
 			    from: emailOption.mailOption.from,
 			    to: emailOption.mailOption.to,
 			    subject: emailOption.mailOption.subject,
@@ -92,9 +92,9 @@ module.exports = {
 
 			smtpTransport.sendMail(mailOptions, function(error, response){
 			    if (error) console.log(error);
-			    
+
 			    smtpTransport.close();
 			});
-			
+
 		}
 };

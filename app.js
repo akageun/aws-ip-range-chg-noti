@@ -1,18 +1,31 @@
-var async = require('async'), 
+var async = require('async'),
 	commonFunc = require('./commonFunc.js'),
 	config = require('./config.js');
 
 var aws_ip_range_api = "https://ip-ranges.amazonaws.com/ip-ranges.json";
-	
+
 async.waterfall([
 	/**
+	 * Config js Valid Check
+	 * TODO : add EmailOption valid
+	 *
+	 * @param callback
+	 */
+	function configValidCheck(callback){
+		if (config.fileFullNm === "") {
+			console.error("fileFullNm is Empty");
+			return;
+		}
+
+	},
+	/**
 	 * API Call
-	 * 
+	 *
 	 * @param callback
 	 */
 	function callData(callback) {
 		var apiBody = commonFunc.callAwsIpRangeApi(aws_ip_range_api,'GET');
-		
+
 		if (apiBody === "" || apiBody.statusCode !== 200) { //not http statusCode 200
 			console.error("Not Http Status Code 200");
 			return;
@@ -21,24 +34,24 @@ async.waterfall([
 	},
 	/**
 	 * File Json Read
-	 * 
+	 *
 	 * @param apiJson
 	 * @param callback
 	 */
 	function getFileJsonData(apiJson, callback) {
 		var fileJson = commonFunc.getAwsIpRangeDataFile(config.fileFullNm);
-		
+
 		if (fileJson === "") {
 			console.log("Create Aws Ip Range Json File.");
 			commonFunc.createJsonFile(apiJson, config.fileFullNm);
 			return;
 		}
-		
+
         callback(null, apiJson, fileJson);
 	},
 	/**
 	 * Json Data Diff
-	 * 
+	 *
 	 * @param apiJson
 	 * @param fileJson
 	 * @param callback
@@ -49,16 +62,16 @@ async.waterfall([
 			console.log("Same data");
 			return;
 		}
-		
+
 		var chgIpJson = commonFunc.diffJsonData(fileJson, apiJson);
-		
+
 		commonFunc.createJsonFile(apiJson, config.fileFullNm);
-		
+
 		callback(null, chgIpJson);
 	},
 	/**
 	 * Email Send
-	 * 
+	 *
 	 * @param chgIpJson
 	 * @param callback
 	 */
